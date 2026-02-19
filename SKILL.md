@@ -44,7 +44,11 @@ From the user's prompt, determine:
 4. **Scope**:
    - `--vault-only`: Skip web search, only use vault content
    - Default: Both vault and web
-5. **Source material**: If the user references specific notes, folders, or tags, read those first
+5. **Output location**:
+   - `--output <path>`: Write all output (final document + agent reports) to this directory
+   - Default: `recon/` subdirectory relative to the source file's directory (or vault root if no source file)
+   - Examples: `--output essays/recon/`, `--output recon/`, `--output working/my-project/recon/`
+6. **Source material**: If the user references specific notes, folders, or tags, read those first
 
 ## Step 2: Initial Vault Scan
 
@@ -178,16 +182,14 @@ R3 structure follows R2 (Synthesizer runs in parallel). Focus agents on developi
 
 After the final round:
 
-### Orchestrator Role
+### Lead Role
 
-The orchestrator does NOT write the recon document's substance. The final-round Synthesizer agent drafts the document following the template. The orchestrator:
+The Lead does NOT write the recon document's substance. The final-round Synthesizer agent writes the complete document — including YAML frontmatter, Process Log, and all formatting — directly to the final output path on disk.
 
-1. Dispatches the final Synthesizer with ALL agent reports from all rounds, plus the template (from `templates/brainstorm-output.md`), plus the instruction to draft the complete document
-2. Takes the Synthesizer's draft and adds: YAML frontmatter, corrected `[[wikilinks]]`, proper Obsidian formatting (callouts, footnotes)
-3. Reads `_metrics.md` from the recon/ directory and adds final metrics to the Process Log (wall-clock times, per-round breakdown — token counts noted as unavailable)
-4. Saves the document and individual agent reports
+1. Dispatches the final Synthesizer with ALL agent reports from all rounds, plus the template (from `templates/brainstorm-output.md`), plus the instruction to draft AND WRITE the complete document. **Pass the final output file path** and the current `_metrics.md` content so the Synthesizer can include the Process Log.
+2. After the Synthesizer completes, **read the document from disk** and make light corrections only: fix broken `[[wikilinks]]`, correct factual errors, update the Process Log with final-round metrics. Do NOT rewrite arguments, reframe findings, or impose a different structure.
 
-The orchestrator may correct factual errors or fix broken references, but should NOT rewrite arguments, reframe findings, or impose a different structure. The Synthesizer's voice is the document's voice.
+**Why the Synthesizer writes the file:** If the Lead crashes after the Synthesizer returns but before writing to disk, the document is lost. The Synthesizer writing directly to the final path ensures the substance survives. The Lead's corrections are improvements, not the only path to a file on disk.
 
 ### Focus Mode Override
 
@@ -199,14 +201,15 @@ When the user selects Focus mode (`--focus`), the output structure changes:
 
 ### Output Location
 
-Save to a `recon/` subdirectory relative to the source file's directory. If no source file was specified, save to `recon/` at the vault root.
+If `--output <path>` was specified, use that directory. Otherwise, save to a `recon/` subdirectory relative to the source file's directory. If no source file was specified, save to `recon/` at the vault root.
 
-- Example: source is `New City Reader/nai.md` → save to `New City Reader/recon/YYYY-MM-DD-<topic-slug>.md`
-- Example: no source file → save to `recon/YYYY-MM-DD-<topic-slug>.md`
+- `--output essays/recon/` → save to `essays/recon/YYYY-MM-DD-<topic-slug>.md`
+- Source is `New City Reader/nai.md`, no `--output` → save to `New City Reader/recon/YYYY-MM-DD-<topic-slug>.md`
+- No source file, no `--output` → save to `recon/YYYY-MM-DD-<topic-slug>.md`
 
-Create the `recon/` folder if it doesn't exist.
+Create the output folder if it doesn't exist.
 
-Save individual agent reports to the same `recon/` folder as `rN-agentname.md` files.
+Save individual agent reports to the same folder as `rN-agentname.md` files.
 
 ### Formatting
 
