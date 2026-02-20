@@ -49,6 +49,9 @@ From the user's prompt, determine:
    - Default: `recon/` subdirectory relative to the source file's directory (or vault root if no source file)
    - Examples: `--output essays/recon/`, `--output recon/`, `--output working/my-project/recon/`
 6. **Source material**: If the user references specific notes, folders, or tags, read those first
+7. **PDF collection**:
+   - `--pdfs`: Explorer searches for and downloads relevant PDFs to a `PDFs/` subdirectory within the output directory
+   - Default: Off
 
 ## Step 2: Initial Vault Scan
 
@@ -72,6 +75,7 @@ Create these tasks (names are illustrative — use the actual task creation tool
 
 1. **R1-explore** — Explorer's round 1 work. No blockers.
    - Include in description: topic, context brief, Explorer agent instructions (from `agents/explorer.md`), output path (`recon/r1-explorer.md`), scope (vault-only or web+vault)
+   - If `--pdfs` is enabled, add to description: "PDF collection is enabled. See the PDF Collection section of your instructions. Save PDFs to `<output_dir>/PDFs/`. Create the directory with `mkdir -p` via Bash before downloading."
 2. **R1-associate** — Associator's round 1 work. No blockers.
    - Include: topic, context brief, Associator instructions (from `agents/associator.md`), output path (`recon/r1-associator.md`)
 3. **R1-critic** — Critic's round 1 work. No blockers.
@@ -152,7 +156,7 @@ Once R1-synthesize is complete, you (the Lead) perform cross-pollination:
 
 Create R2 tasks with the between-rounds brief included in each description:
 
-1. **R2-explore** — Blocked by R1-crosspoll. Explorer focuses on gap-filling and reality check.
+1. **R2-explore** — Blocked by R1-crosspoll. Explorer focuses on gap-filling and reality check. If `--pdfs` is enabled, add: "Check `<output_dir>/PDFs/` for already-downloaded PDFs before downloading to avoid duplicates."
 2. **R2-associate** — Blocked by R1-crosspoll. Associator works connections between R1 findings.
 3. **R2-critic** — Blocked by R1-crosspoll. Critic stress-tests the strongest emerging ideas.
 4. **R2-synthesize** — Blocked by R1-crosspoll. Runs **in parallel** with other R2 agents (NOT gated in R2+). Synthesizer already has the full R1 picture from its R1 work.

@@ -63,6 +63,9 @@ source_notes:
 ### From the Web
 - [Source title](URL) — key insight
 
+### Downloaded PDFs (if --pdfs was used)
+- `PDFs/<filename>.pdf` — description
+
 > [!note]- Process Log
 > **Mode**: {{mode}} · **Rounds**: {{round_count}} · **Date**: {{date}}
 > **Tokens**: n/a (agent teams) · **Wall clock**: {{total_elapsed}}
