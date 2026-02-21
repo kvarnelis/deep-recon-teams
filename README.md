@@ -94,6 +94,7 @@ Messages are brief (2-3 sentences), actionable. No agent messages the Lead mid-r
 | *(default)* | Explore | Divergent — opens possibility space, ends with open questions |
 | `--focus` | Focus | Convergent — narrows to one argument, ends with action plan |
 | `--vault-only` | Vault-only | Skips web search, uses only vault content |
+| `--pdfs` | PDF collection | Explorer downloads relevant PDFs to `<output_dir>/PDFs/` |
 
 ## Prerequisites
 
