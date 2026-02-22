@@ -1,6 +1,6 @@
 # deep-recon-teams
 
-**Experimental fork of [deep-recon](https://github.com/kvarnelis/deep-recon)** that uses Claude Code's agent teams instead of subagents.
+**Experimental fork of [deep-recon](https://github.com/kvarnelis/deep-recon)** that uses Claude Code's agent teams instead of subagents — adapted for any Claude Code project (no Obsidian required).
 
 Four specialized agents run in parallel rounds — but now they can talk to each other mid-round. The hypothesis: inter-agent dialogue (Critic challenging Explorer directly, Synthesizer requesting clarification) produces sharper output than brokering everything through the orchestrator.
 
@@ -70,7 +70,7 @@ The Lead still controls round transitions and cross-pollination — the interpre
 |---|---|---|
 | Critic | Explorer | "You found X. Does it hold when Y?" |
 | Critic | Associator | "X↔Y analogy breaks at Z. Better parallel?" |
-| Explorer | Associator | "Found source on X, might connect to vault note [[Y]]" |
+| Explorer | Associator | "Found source on X, might connect to project file Y" |
 | Associator | Explorer | "Can you search for X? My connection depends on it" |
 | Synthesizer | Any | "Your finding X contradicts Z. Clarify?" |
 
@@ -80,7 +80,7 @@ Messages are brief (2-3 sentences), actionable. No agent messages the Lead mid-r
 
 | Agent | Style | Role |
 |---|---|---|
-| **Explorer** | Divergent | Casts the widest net — web searches, vault searches, adjacent fields, historical parallels |
+| **Explorer** | Divergent | Casts the widest net — web searches, project file searches, adjacent fields, historical parallels |
 | **Associator** | Lateral | Finds non-obvious connections — structural analogies, cross-domain pattern matching, productive metaphors |
 | **Critic** | Adversarial | Stress-tests emerging ideas — prior art, hidden assumptions, steelmanned objections, productive contradictions |
 | **Synthesizer** | Integrative | Identifies emergent patterns across all inputs — distinct framings, tensions worth preserving, the question the user hadn't considered |
@@ -93,14 +93,12 @@ Messages are brief (2-3 sentences), actionable. No agent messages the Lead mid-r
 | `--autonomous` | Autonomous | Runs all rounds, delivers finished document |
 | *(default)* | Explore | Divergent — opens possibility space, ends with open questions |
 | `--focus` | Focus | Convergent — narrows to one argument, ends with action plan |
-| `--vault-only` | Vault-only | Skips web search, uses only vault content |
 
 ## Prerequisites
 
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with agent teams support
 - `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in environment or settings.json
-- An Obsidian vault
-- Web search access (unless using `--vault-only`)
+- Web search access
 
 The skill **fails fast** if agent teams aren't available. No graceful degradation — use `/deep-recon` instead.
 
@@ -141,7 +139,7 @@ Examples:
 ```
 /deep-recon-teams the relationship between infrastructure decay and political legitimacy
 /deep-recon-teams --autonomous --focus what makes network culture different from digital culture
-/deep-recon-teams --vault-only connections between my notes on sound art and landscape
+/deep-recon-teams connections between the authentication module and the event system in this codebase
 ```
 
 ## Experimental Caveats
@@ -171,7 +169,7 @@ Same structure as deep-recon:
 - **Tensions** — productive frictions between framings
 - **Unexpected Connections** — cross-domain links as prose
 - **Open Questions** — genuinely open, not rhetorical
-- **Sources** — vault wikilinks and web references
+- **Sources** — project file references and web references
 - **Process Log** — mode, intention, round count, wall-clock times
 
 Individual agent reports are saved alongside as reference material.

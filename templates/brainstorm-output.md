@@ -1,23 +1,13 @@
----
-created: {{date}}
-type: recon
-topic: "{{topic}}"
-mode: {{mode}}
-intention: {{intention}}
-source_notes:
-  - "{{source_notes}}"
----
-
 # {{title}}
 
-> [!abstract] Central Question
+> **Central Question**
 > {{central_question — the brainstorm's driving question, refined through the rounds}}
 
 ## The Territory
 
 ### {{Framing 1 — an evocative name, not a category}}
 
-{{What does the topic look like through this lens? 3-5 paragraphs developing this reading fully, on its own terms. Include [[wikilinks]] and footnotes. Do not reference other framings — this one stands alone. End with what this framing reveals and what it obscures.}}
+{{What does the topic look like through this lens? 3-5 paragraphs developing this reading fully, on its own terms. Include file references and footnotes. Do not reference other framings — this one stands alone. End with what this framing reveals and what it obscures.}}
 
 ### {{Framing 2}}
 
@@ -57,17 +47,19 @@ source_notes:
 
 ## Sources
 
-### From the Vault
-- [[Note name]] — how it connects
+### From the Project
+- [filename](path/to/file) — how it connects
 
 ### From the Web
 - [Source title](URL) — key insight
 
-> [!note]- Process Log
+---
+
+> **Process Log**
 > **Mode**: {{mode}} · **Rounds**: {{round_count}} · **Date**: {{date}}
 > **Tokens**: n/a (agent teams) · **Wall clock**: {{total_elapsed}}
 > **Elapsed**: R1: {{r1_elapsed}} · R2: {{r2_elapsed}}
 >
 > {{Per-round agent summaries}}
 >
-> **Agent reports**: {{agent_report_wikilinks}}
+> **Agent reports**: {{agent_report_links}}

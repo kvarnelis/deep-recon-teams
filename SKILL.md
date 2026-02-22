@@ -7,7 +7,7 @@ user-invocable: true
 
 # Deep Recon (Agent Teams)
 
-You are orchestrating a multi-agent reconnaissance session within the user's knowledge base. Your role is the Lead: you parse input, spawn a team of four agents, manage round structure via the shared task list, cross-pollinate findings between rounds, and produce a structured recon document.
+You are orchestrating a multi-agent reconnaissance session within the user's project. Your role is the Lead: you parse input, spawn a team of four agents, manage round structure via the shared task list, cross-pollinate findings between rounds, and produce a structured recon document.
 
 ## Architecture Note
 
@@ -42,17 +42,16 @@ From the user's prompt, determine:
    - Default is **Explore** (divergent: opens possibility space, ends with open questions and competing framings)
    - If the user describes a specific deliverable (grant application, essay thesis), suggest Focus mode
 4. **Scope**:
-   - `--vault-only`: Skip web search, only use vault content
-   - Default: Both vault and web
-5. **Source material**: If the user references specific notes, folders, or tags, read those first
+   - Default: Both project files and web
+5. **Source material**: If the user references specific files, folders, or paths, read those first
 
-## Step 2: Initial Vault Scan
+## Step 2: Initial Project Scan
 
 Before spawning agents, gather context:
 
-1. **Grep** the vault for the topic's key terms (2-4 searches)
-2. **Read** the top 3-5 most relevant notes found
-3. Compile a **context brief**: key concepts, existing positions, related notes with paths
+1. **Grep** the project for the topic's key terms (2-4 searches)
+2. **Read** the top 3-5 most relevant files found
+3. Compile a **context brief**: key concepts, existing positions, related files with paths
 4. **Identify primary source URLs.** Scan the source material and context brief for URLs, website references, and project names that have web presences. Pass these to the Explorer in R1 with explicit instruction: "Fetch and read these primary sources directly. Do not rely on secondary coverage."
 5. **Record the session start time.** Note the current time — you'll need it for elapsed-time metrics in the Process Log.
 
@@ -67,7 +66,7 @@ Create tasks for the full round structure upfront using the task list. The task 
 Create these tasks (names are illustrative — use the actual task creation tool):
 
 1. **R1-explore** — Explorer's round 1 work. No blockers.
-   - Include in description: topic, context brief, Explorer agent instructions (from `agents/explorer.md`), output path (`recon/r1-explorer.md`), scope (vault-only or web+vault)
+   - Include in description: topic, context brief, Explorer agent instructions (from `agents/explorer.md`), output path (`recon/r1-explorer.md`), scope
 2. **R1-associate** — Associator's round 1 work. No blockers.
    - Include: topic, context brief, Associator instructions (from `agents/associator.md`), output path (`recon/r1-associator.md`)
 3. **R1-critic** — Critic's round 1 work. No blockers.
@@ -102,7 +101,7 @@ After creating all tasks, the agents begin working:
 2. Within the round, agents may message each other:
    - Critic challenges Explorer: "You found X. Does it hold when Y?"
    - Critic challenges Associator: "X↔Y analogy breaks at Z. Better parallel?"
-   - Explorer hands off to Associator: "Found source on X, might connect to vault note [[Y]]"
+   - Explorer hands off to Associator: "Found source on X, might connect to project file Y"
    - Associator requests Explorer search: "Can you search for X? My connection depends on it"
 3. These exchanges happen WITHOUT your intervention — that's the point of agent teams
 4. Synthesizer's task is blocked — it waits until the other three complete
@@ -183,7 +182,7 @@ After the final round:
 The orchestrator does NOT write the recon document's substance. The final-round Synthesizer agent drafts the document following the template. The orchestrator:
 
 1. Dispatches the final Synthesizer with ALL agent reports from all rounds, plus the template (from `templates/brainstorm-output.md`), plus the instruction to draft the complete document
-2. Takes the Synthesizer's draft and adds: YAML frontmatter, corrected `[[wikilinks]]`, proper Obsidian formatting (callouts, footnotes)
+2. Takes the Synthesizer's draft and adds: proper markdown formatting, corrected file references, section structure
 3. Reads `_metrics.md` from the recon/ directory and adds final metrics to the Process Log (wall-clock times, per-round breakdown — token counts noted as unavailable)
 4. Saves the document and individual agent reports
 
@@ -199,9 +198,9 @@ When the user selects Focus mode (`--focus`), the output structure changes:
 
 ### Output Location
 
-Save to a `recon/` subdirectory relative to the source file's directory. If no source file was specified, save to `recon/` at the vault root.
+Save to a `recon/` subdirectory relative to the source file's directory. If no source file was specified, save to `recon/` in the current working directory.
 
-- Example: source is `New City Reader/nai.md` → save to `New City Reader/recon/YYYY-MM-DD-<topic-slug>.md`
+- Example: source is `docs/architecture.md` → save to `docs/recon/YYYY-MM-DD-<topic-slug>.md`
 - Example: no source file → save to `recon/YYYY-MM-DD-<topic-slug>.md`
 
 Create the `recon/` folder if it doesn't exist.
@@ -210,9 +209,8 @@ Save individual agent reports to the same `recon/` folder as `rN-agentname.md` f
 
 ### Formatting
 
-- Use Obsidian `[[wikilinks]]` for vault references
+- Use standard Markdown links for file references (e.g., `[filename](path/to/file)`)
 - Use standard Markdown footnotes for web sources
-- Use callout blocks (`> [!info]`) for the process log
 - Keep the main body in flowing prose, not bullet-point dumps
 
 ## Handling Failures
@@ -268,8 +266,7 @@ Create `_metrics.md` after Round 1. Update after each subsequent round.
 
 ## Important
 
-- **Don't read the entire vault.** Use targeted Grep/Glob to find relevant notes.
+- **Don't read the entire project.** Use targeted Grep/Glob to find relevant files.
 - **Web search queries should be short** (1-6 words) and varied across agents.
-- **The recon note must be a native Obsidian note** — wikilinks, callouts, proper frontmatter.
-- **Match the user's intellectual register.** Read their existing notes to understand their vocabulary and frameworks.
+- **Match the user's intellectual register.** Read their existing files to understand their vocabulary and frameworks.
 - **Agent teams are experimental.** If anything fails in a way that subagents wouldn't, note it in the Process Log — this data helps evaluate whether the teams approach is worth developing.
